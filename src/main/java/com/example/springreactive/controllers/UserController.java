@@ -1,7 +1,6 @@
 package com.example.springreactive.controllers;
 
 import com.example.springreactive.models.User;
-import com.example.springreactive.repositories.UserRepository;
 import com.example.springreactive.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,14 +19,13 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/user")
 public class UserController {
 
-  @Autowired
-  private UserRepository repository;
 
   @Autowired
   private UserService service;
 
   @GetMapping
-  public Flux<User> getAll( @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "5") Integer elements) {
+  public Flux<User> getAll(@RequestParam(defaultValue = "1") Integer page,
+      @RequestParam(defaultValue = "5") Integer elements) {
     return service.getAll(page, elements);
   }
 
@@ -47,7 +45,7 @@ public class UserController {
   }
 
   @DeleteMapping("{id}")
-  public Mono<Void> deleteUser(@PathVariable Long id){
+  public Mono<Void> deleteUser(@PathVariable Long id) {
     return service.deleteUser(id);
   }
 

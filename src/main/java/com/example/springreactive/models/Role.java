@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Setter;
-import lombok.Value;
-import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -22,11 +20,11 @@ public class Role {
 
   private ERole role;
 
-  public static Role of(String role){
+  public static Role of(String role) {
     return new Role(null, ERole.valueOf(role));
   }
 
-  enum ERole{
+  enum ERole {
     ADMIN_ROLE,
     MEMBER_ROLE,
     SUPER_ROLE,
