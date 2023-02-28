@@ -1,5 +1,8 @@
 package com.example.springreactive.controllers;
 
+import com.example.springreactive.commands.FilterCommandImpl;
+import com.example.springreactive.requests.FilterCommandRequest;
+import com.example.springreactive.responses.FilterCommandResponse;
 import com.example.springreactive.models.User;
 import com.example.springreactive.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public class UserController {
 
   @Autowired
   private UserService service;
+
+  @Autowired
+  FilterCommandImpl command;
 
   @GetMapping
   public Flux<User> getAll(@RequestParam(defaultValue = "1") Integer page,
@@ -47,6 +53,11 @@ public class UserController {
   @DeleteMapping("{id}")
   public Mono<Void> deleteUser(@PathVariable Long id) {
     return service.deleteUser(id);
+  }
+
+  @PostMapping("/filter")
+  public Mono<FilterCommandResponse> filterUser(@RequestBody FilterCommandRequest request) {
+    return command.execute(request);
   }
 
 }

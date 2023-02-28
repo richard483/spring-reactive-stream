@@ -1,7 +1,12 @@
 package com.example.springreactive.services;
 
+import com.example.springreactive.commands.FilterCommandImpl;
+import com.example.springreactive.constants.EFilterBy;
+import com.example.springreactive.constants.ESort;
 import com.example.springreactive.models.User;
 import com.example.springreactive.repositories.UserRepository;
+import com.example.springreactive.requests.FilterCommandRequest;
+import com.example.springreactive.responses.FilterCommandResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,14 +19,11 @@ public class UserService {
   @Autowired
   UserRepository repository;
 
-  public Flux<User> getAll() {
-    try {
-      return repository.findAll();
+  @Autowired
+  FilterCommandImpl command;
 
-    } catch (Exception e) {
-      log.error(e.toString());
-      return null;
-    }
+  public Mono<FilterCommandResponse> getAllByFilter(FilterCommandRequest request){
+    return command.execute(request);
   }
 
   public Flux<User> getAll(Integer page, Integer elements) {
