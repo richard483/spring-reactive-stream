@@ -1,8 +1,6 @@
 package com.example.springreactive.services;
 
 import com.example.springreactive.commands.FilterCommandImpl;
-import com.example.springreactive.constants.EFilterBy;
-import com.example.springreactive.constants.ESort;
 import com.example.springreactive.models.User;
 import com.example.springreactive.repositories.UserRepository;
 import com.example.springreactive.requests.FilterCommandRequest;
@@ -22,7 +20,7 @@ public class UserService {
   @Autowired
   FilterCommandImpl command;
 
-  public Mono<FilterCommandResponse> getAllByFilter(FilterCommandRequest request){
+  public Mono<FilterCommandResponse> getAllByFilter(FilterCommandRequest request) {
     return command.execute(request);
   }
 

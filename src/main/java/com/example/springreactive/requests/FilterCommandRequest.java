@@ -2,11 +2,11 @@ package com.example.springreactive.requests;
 
 import com.example.springreactive.constants.EFilterBy;
 import com.example.springreactive.constants.ESort;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Data
 @Builder
@@ -17,7 +17,6 @@ public class FilterCommandRequest {
   private Integer itemsPerPage;
   private ESort sort;
   private String keyword;
-  @NonNull
-  private EFilterBy filterBy;
+  @NotBlank private EFilterBy filterBy;
 
 }

@@ -17,8 +17,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class FilterCommandImpl implements IFilterCommand {
-  @Autowired
-  UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
   @Override
   public Mono<FilterCommandResponse> execute(FilterCommandRequest request) {
@@ -26,12 +25,20 @@ public class FilterCommandImpl implements IFilterCommand {
 
     if (request.getFilterBy() == EFilterBy.USER_NAME) {
       userFlux = request.getSort() == ESort.ASCENDING ?
-          userRepository.findFilterByName(request.getKeyword(), request.getItemsPerPage(), request.getPageNumber()) :
-          userRepository.findFilterByNameDesc(request.getKeyword(), request.getItemsPerPage(), request.getPageNumber());
-    }else{
+          userRepository.findFilterByName(request.getKeyword(),
+              request.getItemsPerPage(),
+              request.getPageNumber()) :
+          userRepository.findFilterByNameDesc(request.getKeyword(),
+              request.getItemsPerPage(),
+              request.getPageNumber());
+    } else {
       userFlux = request.getSort() == ESort.ASCENDING ?
-          userRepository.findFilterByRoleName(request.getKeyword(), request.getItemsPerPage(), request.getPageNumber()) :
-          userRepository.findFilterByRoleNameDesc(request.getKeyword(), request.getItemsPerPage(), request.getPageNumber());
+          userRepository.findFilterByRoleName(request.getKeyword(),
+              request.getItemsPerPage(),
+              request.getPageNumber()) :
+          userRepository.findFilterByRoleNameDesc(request.getKeyword(),
+              request.getItemsPerPage(),
+              request.getPageNumber());
     }
 
     userFlux.subscribe(all -> log.info(String.valueOf(all)));

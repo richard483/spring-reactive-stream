@@ -18,7 +18,6 @@ public class User {
   Long id;
 
   String name;
-
   Long role_id;
 
 }

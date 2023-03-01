@@ -12,8 +12,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("api/role")
 public class RoleController {
-  @Autowired
-  RoleRepository roleRepository;
+  @Autowired RoleRepository roleRepository;
 
   @GetMapping("/{role}")
   public Mono<Role> createRole(@PathVariable String role) {

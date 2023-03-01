@@ -1,9 +1,9 @@
 package com.example.springreactive.controllers;
 
 import com.example.springreactive.commands.FilterCommandImpl;
+import com.example.springreactive.models.User;
 import com.example.springreactive.requests.FilterCommandRequest;
 import com.example.springreactive.responses.FilterCommandResponse;
-import com.example.springreactive.models.User;
 import com.example.springreactive.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,10 +24,9 @@ public class UserController {
 
 
   @Autowired
-  private UserService service;
-
-  @Autowired
   FilterCommandImpl command;
+  @Autowired
+  private UserService service;
 
   @GetMapping
   public Flux<User> getAll(@RequestParam(defaultValue = "1") Integer page,

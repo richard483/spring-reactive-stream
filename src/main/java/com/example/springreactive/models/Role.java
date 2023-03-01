@@ -25,9 +25,6 @@ public class Role {
   }
 
   enum ERole {
-    ADMIN_ROLE,
-    MEMBER_ROLE,
-    SUPER_ROLE,
-    GIGA_ROLE
+    ADMIN_ROLE, MEMBER_ROLE, SUPER_ROLE, GIGA_ROLE
   }
 }
