@@ -1,5 +1,6 @@
 package com.example.springreactive.models;
 
+import com.example.springreactive.constants.ERole;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +23,5 @@ public class Role {
 
   public static Role of(String role) {
     return new Role(null, ERole.valueOf(role));
-  }
-
-  enum ERole {
-    ADMIN_ROLE, MEMBER_ROLE, SUPER_ROLE, GIGA_ROLE
   }
 }

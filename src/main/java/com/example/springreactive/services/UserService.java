@@ -58,8 +58,10 @@ public class UserService {
 
     try {
       return repository.findUserById(id).flatMap(u -> userMono.map(uM -> {
-        u.setRole_id(uM.getRole_id());
-        u.setName(uM.getName());
+        if(uM.getRole_id()!=null)
+          u.setRole_id(uM.getRole_id());
+        if(uM.getName()!=null)
+          u.setName(uM.getName());
         return u;
       })).flatMap(u -> repository.save(u));
     } catch (Exception e) {

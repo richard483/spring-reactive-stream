@@ -27,18 +27,18 @@ public class FilterCommandImpl implements IFilterCommand {
       userFlux = request.getSort() == ESort.ASCENDING ?
           userRepository.findFilterByName(request.getKeyword(),
               request.getItemsPerPage(),
-              request.getPageNumber()) :
+              request.getPageNumber()-1) :
           userRepository.findFilterByNameDesc(request.getKeyword(),
               request.getItemsPerPage(),
-              request.getPageNumber());
+              request.getPageNumber()-1);
     } else {
       userFlux = request.getSort() == ESort.ASCENDING ?
           userRepository.findFilterByRoleName(request.getKeyword(),
               request.getItemsPerPage(),
-              request.getPageNumber()) :
+              request.getPageNumber()-1) :
           userRepository.findFilterByRoleNameDesc(request.getKeyword(),
               request.getItemsPerPage(),
-              request.getPageNumber());
+              request.getPageNumber()-1);
     }
 
     userFlux.subscribe(all -> log.info(String.valueOf(all)));
