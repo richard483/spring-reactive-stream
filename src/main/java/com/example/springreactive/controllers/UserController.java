@@ -6,6 +6,7 @@ import com.example.springreactive.requests.FilterCommandRequest;
 import com.example.springreactive.responses.FilterCommandResponse;
 import com.example.springreactive.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,28 +27,28 @@ public class UserController {
   @Autowired private UserService service;
 
   @GetMapping
-  public Mono<? extends Object> getAll(@RequestParam(defaultValue = "1") Integer page,
+  public Mono<ResponseEntity<?>> getAll(@RequestParam(defaultValue = "1") Integer page,
       @RequestParam(defaultValue = "5") Integer elements) {
     return service.getAll(page, elements);
   }
 
   @GetMapping(value = "/{name}")
-  public Mono<? extends Object> getUserByName(@PathVariable String name) {
+  public Mono<ResponseEntity<?>> getUserByName(@PathVariable String name) {
     return service.getUserByName(name);
   }
 
   @PostMapping
-  public Mono<? extends Object> createUser(@RequestBody User user) {
+  public Mono<ResponseEntity<?>> createUser(@RequestBody User user) {
     return service.createUser(user);
   }
 
-  @PatchMapping("update/{id}")
-  public Mono<? extends Object> updateUser(@PathVariable Long id, @RequestBody Mono<User> user) {
-    return service.updateUser(id, user);
+  @PatchMapping("update")
+  public Mono<ResponseEntity<?>> updateUser(@RequestBody User user) {
+    return service.updateUser(user);
   }
 
   @DeleteMapping("{id}")
-  public Mono<? extends Object> deleteUser(@PathVariable Long id) {
+  public Mono<ResponseEntity<?>> deleteUser(@PathVariable Long id) {
     return service.deleteUser(id);
   }
 

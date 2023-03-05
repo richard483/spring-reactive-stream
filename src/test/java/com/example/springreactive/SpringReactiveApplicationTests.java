@@ -35,10 +35,10 @@ class SpringReactiveApplicationTests {
     this.userRepository.save(User.builder().id(1L).name("member").role_id(2L).build());
     this.userRepository.save(User.builder().id(2L).name("Kotoka Torahime").role_id(2L).build());
     this.userRepository.save(User.builder().id(3L).name("Zaion Lanza").role_id(2L).build());
-    this.userRepository.save(User.builder().id(4L).name("Laylla Alstromeria").role_id(2L).build());
+    this.userRepository.save(User.builder().id(4L).name("Layla Alstromeria").role_id(2L).build());
     this.userRepository.save(User.builder().id(5L).name("Finana Ryugu").role_id(2L).build());
 
-    this.userRepository.save(User.builder().id(6L).name("admin").role_id(3L).build());
+    this.userRepository.save(User.builder().id(6L).name("admin").role_id(1L).build());
   }
 
   @AfterEach
@@ -64,7 +64,7 @@ class SpringReactiveApplicationTests {
   }
 
   @Test
-  void getAllUserData_withNoItemsOnPage_success() {
+  void getAllUserData_withNoItemsOnPage_fail() {
     Integer page = 10;
     Integer elements = 10;
     Integer expectedObjectLength = 0;
@@ -76,12 +76,15 @@ class SpringReactiveApplicationTests {
             .build())
         .exchange()
         .expectStatus()
-        .isOk()
+        .isBadRequest()
         .expectHeader()
         .contentType(MediaType.APPLICATION_JSON)
         .expectBody()
-        .jsonPath("$.length()")
-        .isEqualTo(expectedObjectLength);
+        .jsonPath("$")
+        .isEqualTo("There are no user(s) in this page");
   }
 
+  @Test
+  void name() {
+  }
 }

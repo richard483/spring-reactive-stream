@@ -4,6 +4,7 @@ import com.example.springreactive.commands.FilterCommandImpl;
 import com.example.springreactive.models.User;
 import com.example.springreactive.repositories.UserRepository;
 import com.example.springreactive.requests.FilterCommandRequest;
+import com.example.springreactive.responses.DefaultResponse;
 import com.example.springreactive.responses.FilterCommandResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,64 +23,90 @@ public class UserService {
     return command.execute(request);
   }
 
-  public Mono<? extends Object> getAll(Integer page, Integer elements) {
+  public Mono<ResponseEntity<?>> getAll(Integer page, Integer elements) {
     try {
-      return repository.findAll(page, elements)
-          .collectList()
-          .map(users -> ResponseEntity.ok().body(users));
-    } catch (Exception e) {
-      log.error(e.toString());
-      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
-    }
-  }
-
-  public Mono<? extends Object> getUserByName(String name) {
-    try {
-      return repository.findUserByName(name).map(user -> ResponseEntity.ok().body(user));
-
-    } catch (Exception e) {
-      log.error(e.toString());
-      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
-    }
-  }
-
-  public Mono<? extends Object> createUser(User user) {
-    try {
-      return repository.save(user)
-          .map(u -> ResponseEntity.ok().body("Success created user: " + user));
-
-    } catch (Exception e) {
-      log.error(e.toString());
-      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
-    }
-  }
-
-  public Mono<? extends Object> updateUser(Long id, Mono<User> userMono) {
-
-    try {
-      return repository.findUserById(id).flatMap(u -> userMono.map(uM -> {
-        u.setRole_id(uM.getRole_id());
-        u.setName(uM.getName());
-        return u;
-      })).flatMap(u -> {
-        repository.save(u);
-        return Mono.just(ResponseEntity.ok().body("Success updated user id: " + u.getId()));
+      return repository.findAll(page, elements).collectList().map(users -> {
+        if (users.size() == 0)
+          return ResponseEntity.badRequest()
+              .body(DefaultResponse.builder().message("There are no item(s) in this page").build());
+        return ResponseEntity.ok()
+            .body(DefaultResponse.builder().data(users).message("success").build());
       });
     } catch (Exception e) {
       log.error(e.toString());
-      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
+      return Mono.just(ResponseEntity.badRequest().body(DefaultResponse.builder()
+          .message("error")
+          .data(e.toString())
+          .build()));
+    }
+  }
+
+  public Mono<ResponseEntity<?>> getUserByName(String name) {
+    try {
+      return repository.findUserByName(name)
+          .map(user -> ResponseEntity.ok()
+              .body(DefaultResponse.builder()
+                  .message("success")
+                  .data(user)
+                  .build()));
+
+    } catch (Exception e) {
+      log.error(e.toString());
+      return Mono.just(ResponseEntity.badRequest().body(DefaultResponse.builder()
+          .message("error")
+          .data(e.toString())
+          .build()));
+    }
+  }
+
+  public Mono<ResponseEntity<?>> createUser(User user) {
+    try {
+      return repository.save(user)
+          .map(u -> ResponseEntity.ok().body(DefaultResponse.builder()
+              .message("Success created user: " + user)
+              .data(user)
+              .build()));
+
+    } catch (Exception e) {
+      log.error(e.toString());
+      return Mono.just(ResponseEntity.badRequest().body(DefaultResponse.builder()
+          .message("error")
+          .data(e.toString())
+          .build()));
+    }
+  }
+
+  public Mono<ResponseEntity<?>> updateUser(User userMono) {
+
+    try {
+      return repository.save(userMono).then(Mono.just(ResponseEntity.badRequest().body(DefaultResponse.builder()
+          .message("success")
+          .data(repository.save(userMono))
+          .build())));
+    } catch (Exception e) {
+      log.error(e.toString());
+      return Mono.just(ResponseEntity.badRequest().body(DefaultResponse.builder()
+          .message("error")
+          .data(e.toString())
+          .build()));
     }
 
   }
 
-  public Mono<? extends Object> deleteUser(Long id) {
+  public Mono<ResponseEntity<?>> deleteUser(Long id) {
     try {
       log.info("Deleting user with id: " + id);
       repository.deleteById(id);
-      return Mono.just(ResponseEntity.ok().body("Deleted user with id: " + id));
+      return Mono.just(ResponseEntity.ok().body(DefaultResponse.builder()
+          .message("Deleted user with id: " + id)
+          .data(id)
+          .build()));
     } catch (Exception e) {
       log.error(e.toString());
-      return Mono.just(ResponseEntity.ok().body(e.toString()));
+      return Mono.just(ResponseEntity.badRequest().body(DefaultResponse.builder()
+          .message("error")
+          .data(e.toString())
+          .build()));
     }
   }
 }
