@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -23,34 +22,32 @@ import reactor.core.publisher.Mono;
 public class UserController {
 
 
-  @Autowired
-  FilterCommandImpl command;
-  @Autowired
-  private UserService service;
+  @Autowired FilterCommandImpl command;
+  @Autowired private UserService service;
 
   @GetMapping
-  public Flux<User> getAll(@RequestParam(defaultValue = "1") Integer page,
+  public Mono<? extends Object> getAll(@RequestParam(defaultValue = "1") Integer page,
       @RequestParam(defaultValue = "5") Integer elements) {
     return service.getAll(page, elements);
   }
 
   @GetMapping(value = "/{name}")
-  public Mono<User> getUserByName(@PathVariable String name) {
+  public Mono<? extends Object> getUserByName(@PathVariable String name) {
     return service.getUserByName(name);
   }
 
   @PostMapping
-  public Mono<User> createUser(@RequestBody User user) {
+  public Mono<? extends Object> createUser(@RequestBody User user) {
     return service.createUser(user);
   }
 
   @PatchMapping("update/{id}")
-  public Mono<User> updateUser(@PathVariable Long id, @RequestBody Mono<User> user) {
+  public Mono<? extends Object> updateUser(@PathVariable Long id, @RequestBody Mono<User> user) {
     return service.updateUser(id, user);
   }
 
   @DeleteMapping("{id}")
-  public Mono<Void> deleteUser(@PathVariable Long id) {
+  public Mono<? extends Object> deleteUser(@PathVariable Long id) {
     return service.deleteUser(id);
   }
 

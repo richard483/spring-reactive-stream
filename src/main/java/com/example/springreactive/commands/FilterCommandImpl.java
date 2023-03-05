@@ -47,7 +47,7 @@ public class FilterCommandImpl implements IFilterCommand {
     return userMono.flatMap(userList -> {
       Mono<FilterCommandResponse> listOfUser = Mono.just(FilterCommandResponse.builder()
           .data(userList)
-          .responseMessage("List of user")
+          .responseMessage("success")
           .build());
       return listOfUser;
     });

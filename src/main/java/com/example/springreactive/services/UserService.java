@@ -7,77 +7,79 @@ import com.example.springreactive.requests.FilterCommandRequest;
 import com.example.springreactive.responses.FilterCommandResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
 public class UserService {
-  @Autowired
-  UserRepository repository;
+  @Autowired UserRepository repository;
 
-  @Autowired
-  FilterCommandImpl command;
+  @Autowired FilterCommandImpl command;
 
   public Mono<FilterCommandResponse> getAllByFilter(FilterCommandRequest request) {
     return command.execute(request);
   }
 
-  public Flux<User> getAll(Integer page, Integer elements) {
+  public Mono<? extends Object> getAll(Integer page, Integer elements) {
     try {
-      return repository.findAll(page, elements);
-
+      return repository.findAll(page, elements)
+          .collectList()
+          .map(users -> ResponseEntity.ok().body(users));
     } catch (Exception e) {
       log.error(e.toString());
-      return null;
+      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
     }
   }
 
-  public Mono<User> getUserByName(String name) {
+  public Mono<? extends Object> getUserByName(String name) {
     try {
-      return repository.findUserByName(name);
+      return repository.findUserByName(name).map(user -> ResponseEntity.ok().body(user));
 
     } catch (Exception e) {
       log.error(e.toString());
-      return null;
+      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
     }
   }
 
-  public Mono<User> createUser(User user) {
+  public Mono<? extends Object> createUser(User user) {
     try {
-      return repository.save(user);
+      return repository.save(user)
+          .map(u -> ResponseEntity.ok().body("Success created user: " + user));
 
     } catch (Exception e) {
       log.error(e.toString());
-      return null;
+      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
     }
   }
 
-  public Mono<User> updateUser(Long id, Mono<User> userMono) {
+  public Mono<? extends Object> updateUser(Long id, Mono<User> userMono) {
 
     try {
       return repository.findUserById(id).flatMap(u -> userMono.map(uM -> {
         u.setRole_id(uM.getRole_id());
         u.setName(uM.getName());
         return u;
-      })).flatMap(u -> repository.save(u));
+      })).flatMap(u -> {
+        repository.save(u);
+        return Mono.just(ResponseEntity.ok().body("Success updated user id: " + u.getId()));
+      });
     } catch (Exception e) {
       log.error(e.toString());
-      return null;
+      return Mono.just(ResponseEntity.badRequest().body(e.toString()));
     }
 
   }
 
-  public Mono<Void> deleteUser(Long id) {
+  public Mono<? extends Object> deleteUser(Long id) {
     try {
-      if (repository.findUserById(id) == null)
-        throw new RuntimeException();
       log.info("Deleting user with id: " + id);
-      return repository.deleteById(id);
+      repository.deleteById(id);
+      return Mono.just(ResponseEntity.ok().body("Deleted user with id: " + id));
     } catch (Exception e) {
       log.error(e.toString());
-      return null;
+      return Mono.just(ResponseEntity.ok().body(e.toString()));
     }
   }
 }

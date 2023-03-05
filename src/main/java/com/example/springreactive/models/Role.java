@@ -24,7 +24,7 @@ public class Role {
     return new Role(null, ERole.valueOf(role));
   }
 
-  enum ERole {
+  public enum ERole {
     ADMIN_ROLE, MEMBER_ROLE, SUPER_ROLE, GIGA_ROLE
   }
 }
